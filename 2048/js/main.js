@@ -15,7 +15,7 @@ function newGame() {
     // 初始化棋盘格
     init();
     // 随机在两个棋盘格生成数字
-    generateOneNumber();
+    // generateOneNumber();
     generateOneNumber();
 }
 
@@ -172,7 +172,7 @@ function moveLeft() {
             }
         }
     }
-    setTimeout("updateBoardView()", 500);
+    setTimeout("updateBoardView()", 200);
     return true;
 }
 
@@ -203,7 +203,7 @@ function moveRight() {
                         showMoveAnimation(i, j, i, k);
 
                         // 元素叠加
-                        board[i][k] += board[i][j];
+                        board[i][k] *= 2;
                         board[i][j] = 0;
 
                         continue;
@@ -212,7 +212,7 @@ function moveRight() {
             }
         }
     }
-    setTimeout("updateBoardView()", 500);
+    setTimeout("updateBoardView()", 200);
     return true;
 }
 
@@ -243,7 +243,7 @@ function moveUp() {
                         showMoveAnimation(i, j, k, j);
 
                         // 元素叠加
-                        board[k][j] += board[i][j];
+                        board[k][j] *= 2;
                         board[i][j] = 0;
 
                         continue;
@@ -252,7 +252,7 @@ function moveUp() {
             }
         }
     }
-    setTimeout("updateBoardView()",500);
+    setTimeout("updateBoardView()",200);
     return true;
 }
 
@@ -282,7 +282,7 @@ function moveDown() {
                         showMoveAnimation(i, j, k, j);
 
                         // 元素叠加
-                        board[k][j] += board[i][j];
+                        board[k][j] *= 2;
                         board[i][j] = 0;
 
                         continue;
@@ -291,6 +291,6 @@ function moveDown() {
             }
         }
     }
-    setTimeout("updateBoardView()", 500);
+    setTimeout("updateBoardView()", 200);
     return true;
 }

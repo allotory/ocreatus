@@ -18,10 +18,10 @@ function showNumberWithAnimation(i, j, number) {
     }, 50);
 }
 
-function showMoveAnimation(fromX, fromY, toX, toY) {
-    var theNumCell = $("#number-cell-" + fromX + "-" + fromY);
-    theNumCell.animate({
-        top: getPosLeft(toX, toY),
-        left: getPosTop(toX, toY)
-    }, 200);
+function showMoveAnimation(fromX, fromY, toX, toY){
+    var theNumberCell = $("#number-cell-" + fromX + "-" + fromY);
+    theNumberCell.animate({
+        top: getPosTop(toX, toY),
+        left: getPosLeft(toX, toY)
+    },200);
 }
