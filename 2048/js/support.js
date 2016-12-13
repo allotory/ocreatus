@@ -53,3 +53,97 @@ function getNumberBackgroundColor(number) {
     }
     return "black";
 }
+
+function noSpace(board) {
+    for (var i = 0; i < 4; i ++) {
+        for (var j = 0; j < 4; j ++) {
+            if (board[i][j] == 0) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+function canMoveLeft(board) {
+    for (var i = 0; i < 4; i ++) {
+        // 不用考虑第一列
+        for (var j = 1; j < 4; j ++) {
+            // 存在元素
+            if (board[i][j] != 0) {
+                // 前一列为空或当前数字与前一列相等（合并）
+                if (board[i][j - 1] == 0 || board[i][j - 1] == board[i][j]) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function canMoveRight(board) {
+    for (var i = 0; i < 4; i ++) {
+        // 不考虑最后一列
+        for (var j = 2; 0 <= j; j --) {
+            // 存在元素
+            if (board[i][j] != 0) {
+                // 后一列为空或当前与后一列相等
+                if (board[i][j + 1] == 0 || board[i][j] == board[i][j + 1]) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function canMoveUp(board) {
+    // 不考虑第一行
+    for (var i = 1; i < 4; i ++) {
+        for (var j = 0; j < 4; j ++) {
+            if (board[i][j] != 0) {
+                // 上一行为空或当前与上一行相等
+                if (board[i - 1][j] == 0 || board[i][j] == board[i - 1][j]) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function canMoveDown(board) {
+    // 不考虑最后一列
+    for (var i = 2; 0 <= i; i --) {
+        for (var j = 0; j < 3; j ++) {
+            if (board[i][j] != 0) {
+                // 下一行为空或者当前与下一行想的
+                if (board[i + 1][j] == 0 || board[i][j] == board[i + 1][j]) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+// 第 i 行从 k 到 j 没有其他元素（障碍物）
+function noBlockHorizontal(row, col1, col2, board) {
+    for (var i = col1 + 1; i < col2; i ++) {
+        if (board[row][i] != 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// 第 col 列从 row1 到 row2 没有其他元素（障碍物）
+function noBlockVertical(col, row1, row2, board) {
+    for (var i = row1 + 1; i < row2; i ++) {
+        if (board[i][col] != 0) {
+            return false;
+        }
+    }
+    return true;
+}
