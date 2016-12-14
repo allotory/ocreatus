@@ -8,8 +8,27 @@ var hasConflicted = new Array();
 var score = 0;
 
 $(document).ready(function() {
+    prepareMobile();
     newGame();
 });
+
+function prepareMobile() {
+
+    if (documentWidth > 500) {
+        gridContainerWidth = 500;
+        cellSpace = 20;
+        cellSideLength = 100;
+    }
+
+    $("#grid-container").css("width", gridContainerWidth - 2 * cellSpace);
+    $("#grid-container").css("height", gridContainerWidth - 2 * cellSpace);
+    $("#grid-container").css("padding", cellSpace);
+    $("#grid-container").css("border-radius", 0.02 * gridContainerWidth);
+
+    $(".grid-cell").css("width", cellSideLength);
+    $(".grid-cell").css("height", cellSideLength);
+    $(".grid-cell").css("border-radius", 0.02 * cellSideLength);
+}
 
 function newGame() {
 
@@ -55,11 +74,11 @@ function updateBoardView() {
             if (board[i][j] == 0) {
                 theNumCell.css("width", "0px");
                 theNumCell.css("height", "0px");
-                theNumCell.css("top", getPosTop(i, j) + 50);
-                theNumCell.css("left", getPosLeft(i, j) + 50);
+                theNumCell.css("top", getPosTop(i, j) + cellSideLength / 2);
+                theNumCell.css("left", getPosLeft(i, j) + cellSideLength / 2);
             } else {
-                theNumCell.css("width", "100px");
-                theNumCell.css("height", "100px");
+                theNumCell.css("width", cellSideLength);
+                theNumCell.css("height", cellSideLength);
                 theNumCell.css("top", getPosTop(i, j));
                 theNumCell.css("left", getPosLeft(i, j));
 
@@ -73,6 +92,9 @@ function updateBoardView() {
             hasConflicted[i][j] = false;
         }
     }
+
+    $(".number-cell").css("line-height", cellSideLength + "px");
+    $(".number-cell").css("font-size", 0.6 * cellSideLength + "px");
 }
 
 function generateOneNumber() {

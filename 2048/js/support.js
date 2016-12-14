@@ -1,14 +1,27 @@
 /**
  * 支撑逻辑
  * 包含一些供游戏运转的底层逻辑，用于主模块和数据模块沟通
+ *
+ * main: 500px * 500px  => 100%
+ * width-height: 460px  => 92%
+ * cell: 100px * 100px  => 18%
+ * padding: 20px        => 4%
  */
+// 当前设备屏幕可以使用宽度
+var documentWidth = window.screen.availWidth;
+// grid container
+var gridContainerWidth = 0.92 * documentWidth;
+// 小方块边长
+var cellSideLength = 0.18 * documentWidth;
+// 每一个小方块之间的间距
+var cellSpace = 0.04 * documentWidth;
 
 function getPosTop(i, j) {
-    return 20 + i * 120;
+    return cellSpace + i * (cellSideLength + cellSpace);
 }
 
 function getPosLeft(i, j) {
-    return 20 + j * 120;
+    return cellSpace + j * (cellSideLength + cellSpace);
 }
 
 function getNumberColor(number) {

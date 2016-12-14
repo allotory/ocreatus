@@ -37,6 +37,12 @@ header p {
     margin: 20px auto;
 }
 
+/*
+    main: 500px * 500px => 100%
+    padding: 20px       => 4%
+    width-height: 460px => 92%
+    cell: 100px * 100px => 18%
+*/
 #grid-container {
     width: 460px;
     height: 460px;
