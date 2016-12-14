@@ -4,6 +4,7 @@
  */
 
 var board = new Array();
+var hasConflicted = new Array();
 var score = 0;
 
 $(document).ready(function() {
@@ -15,7 +16,7 @@ function newGame() {
     // 初始化棋盘格
     init();
     // 随机在两个棋盘格生成数字
-    // generateOneNumber();
+    generateOneNumber();
     generateOneNumber();
 }
 
@@ -23,6 +24,7 @@ function init() {
     for (var i = 0; i < 4; i ++) {
         // 声明表格数组
         board[i] = new Array();
+        hasConflicted[i] = new Array();
         for (var j = 0; j < 4; j ++) {
             // 初始化棋盘格样式
             var gridCell = $("#grid-cell-" + i +"-" + j);
@@ -31,11 +33,14 @@ function init() {
 
             // 初始化数组
             board[i][j] = 0;
+            hasConflicted[i][j] = false;
         }
     }
 
     // 根据 board 里面的值，更新 number-cell 数字
     updateBoardView();
+
+    score = 0;
 }
 
 function updateBoardView() {
@@ -64,6 +69,8 @@ function updateBoardView() {
 
                 theNumCell.text(board[i][j]);
             }
+
+            hasConflicted[i][j] = false;
         }
     }
 }
@@ -77,7 +84,9 @@ function generateOneNumber() {
     var randomX = parseInt(Math.floor(Math.random() * 4));
     var randomY = parseInt(Math.floor(Math.random() * 4));
 
-    while (true) {
+    var times = 0;
+
+    while (times < 50) {
         // 位置为空
         if (board[randomX][randomY] == 0) {
             break;
@@ -85,6 +94,19 @@ function generateOneNumber() {
         // 位置不为空，重新生成新位置
         randomX = parseInt(Math.floor(Math.random() * 4));
         randomY = parseInt(Math.floor(Math.random() * 4));
+
+        times ++;
+    }
+
+    if (times == 50) {
+        for (var i = 0; i < 4; i ++) {
+            for (var j = 0; j < 4; j ++) {
+                if (board[i][j] == 0) {
+                    randomX = i;
+                    randomY = j;
+                }
+            }
+        }
     }
 
     // 随机生成一个数字
@@ -102,29 +124,29 @@ $(document).keydown(function(event){
         case 37:
             // left
             if (moveLeft()) {
-                generateOneNumber();
-                isGameOver();
+                setTimeout("generateOneNumber()", 210);
+                setTimeout("isGameOver()", 300);
             }
             break;
         case 38:
             // up
             if (moveUp()) {
-                generateOneNumber();
-                isGameOver();
+                setTimeout("generateOneNumber()", 210);
+                setTimeout("isGameOver()", 300);
             }
             break;
         case 39:
             // right
             if (moveRight()) {
-                generateOneNumber();
-                isGameOver();
+                setTimeout("generateOneNumber()", 210);
+                setTimeout("isGameOver()", 300);
             }
             break;
         case 40:
             // down
             if (moveDown()) {
-                generateOneNumber();
-                isGameOver();
+                setTimeout("generateOneNumber()", 210);
+                setTimeout("isGameOver()", 300);
             }
             break;
         default:
@@ -134,6 +156,13 @@ $(document).keydown(function(event){
 
 function isGameOver() {
 
+    if (noSpace(board) && noMove(board)) {
+        gameOver();
+    }
+}
+
+function gameOver() {
+    alert("game over!");
 }
 
 function moveLeft() {
@@ -157,7 +186,7 @@ function moveLeft() {
                         board[i][j] = 0;
 
                         continue;
-                    } else if (board[i][k] == board[i][j] && noBlockHorizontal(i, k, j, board)) {
+                    } else if (board[i][k] == board[i][j] && noBlockHorizontal(i, k, j, board) && !hasConflicted[i][k]) {
                         // 元素相等，且中间没有其他元素
                         // 移动
                         showMoveAnimation(i, j, i, k);
@@ -165,6 +194,13 @@ function moveLeft() {
                         // 元素叠加
                         board[i][k] += board[i][j];
                         board[i][j] = 0;
+
+                        // 加分
+                        score += board[i][k];
+                        updateScore(score);
+
+                        // 碰撞判断
+                        hasConflicted[i][k] = true;
 
                         continue;
                     }
@@ -197,7 +233,7 @@ function moveRight() {
                         board[i][j] = 0;
 
                         continue;
-                    } else if (board[i][k] == board[i][j] && noBlockHorizontal(i, j, k, board)) {
+                    } else if (board[i][k] == board[i][j] && noBlockHorizontal(i, j, k, board) && !hasConflicted[i][k]) {
                         // 元素相等，且中间没有其他元素
                         // 移动
                         showMoveAnimation(i, j, i, k);
@@ -205,6 +241,12 @@ function moveRight() {
                         // 元素叠加
                         board[i][k] *= 2;
                         board[i][j] = 0;
+
+                        // 加分
+                        score += board[i][k];
+                        updateScore(score);
+
+                        hasConflicted[i][k] = true;
 
                         continue;
                     }
@@ -230,7 +272,7 @@ function moveUp() {
 
                 for (var k = 0; k < i; k ++) {
                     // 当前元素为零，并且第 j 列从 k 到 i 行没有其他元素（障碍物）
-                    if (board[k][j] == 0 && noBlockVertical(j, k, i, board)) {
+                    if (board[k][j] == 0 && noBlockVertical(j, k, i, board) && !hasConflicted[k][j]) {
                         // 移动，从 [i][j] 移动到 [k][j]
                         showMoveAnimation(i, j, k, j);
                         board[k][j] = board[i][j];
@@ -245,6 +287,12 @@ function moveUp() {
                         // 元素叠加
                         board[k][j] *= 2;
                         board[i][j] = 0;
+
+                        // 加分
+                        score += board[k][j];
+                        updateScore(score);
+
+                        hasConflicted[k][j] = true;
 
                         continue;
                     }
@@ -269,7 +317,7 @@ function moveDown() {
 
                 for (var k = 3; i < k; k --) {
                     // 当前元素为零，并且第 j 列从 i 到 k 没有其他元素（障碍物）
-                    if (board[k][j] == 0 && noBlockVertical(j, i, k, board)) {
+                    if (board[k][j] == 0 && noBlockVertical(j, i, k, board) && !hasConflicted[k][j]) {
                         // 移动，从 [i][j] 移动到 [k][j]
                         showMoveAnimation(i, j, k, j);
                         board[k][j] = board[i][j];
@@ -284,6 +332,12 @@ function moveDown() {
                         // 元素叠加
                         board[k][j] *= 2;
                         board[i][j] = 0;
+
+                        // 加分
+                        score += board[k][j];
+                        updateScore(score);
+
+                        hasConflicted[k][j] = true;
 
                         continue;
                     }
