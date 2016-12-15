@@ -7,6 +7,11 @@ var board = new Array();
 var hasConflicted = new Array();
 var score = 0;
 
+var startX = 0;
+var startY = 0;
+var endX = 0;
+var endY = 0;
+
 $(document).ready(function() {
     prepareMobile();
     newGame();
@@ -142,6 +147,11 @@ function generateOneNumber() {
 }
 
 $(document).keydown(function(event){
+
+    // 阻止默认按键效果（所有的），只使用自己定义的，防止有滚动条时，按上下键移动页面
+    // 如果不想使其他按键失效，可以将下面语句添加到每一个按键 case 内
+    event.preventDefault();
+
     switch (event.keyCode) {
         case 37:
             // left
@@ -173,6 +183,57 @@ $(document).keydown(function(event){
             break;
         default:
             break;
+    }
+});
+
+document.addEventListener("touchstart", function(event) {
+    startX = event.touches[0].pageX;
+    startY = event.touches[0].pageY;
+});
+
+document.addEventListener("touchend", function(event) {
+    endX = event.changedTouches[0].pageX;
+    endY = event.changedTouches[0].pageY;
+
+    var deltaX = endX - startX;
+    var deltaY = endY - startY;
+
+    // 滑动大于一定范围才会触发移动
+    if (Math.abs(deltaX) < 0.2 * documentWidth && Math.abs(deltaY) < 0.2 * documentWidth) {
+        return;
+    }
+
+    if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+        // 在 x 轴方向滑动
+        if (deltaX > 0) {
+            // 向 x 轴正方向移动（右）
+            if (moveRight()) {
+                setTimeout("generateOneNumber()", 210);
+                setTimeout("isGameOver()", 300);
+            }
+        } else if (deltaX < 0) {
+            // 向 x 轴负方向移动（左）
+            if (moveLeft()) {
+                setTimeout("generateOneNumber()", 210);
+                setTimeout("isGameOver()", 300);
+            }
+        }
+
+    } else {
+        // 在 y 轴方向滑动
+        if (deltaY > 0) {
+            // 向 y 轴正方向移动（下）
+            if (moveDown()) {
+                setTimeout("generateOneNumber()", 210);
+                setTimeout("isGameOver()", 300);
+            }
+        } else if (deltaY < 0) {
+            // 向 y 轴负方向移动（上）
+            if (moveUp()) {
+                setTimeout("generateOneNumber()", 210);
+                setTimeout("isGameOver()", 300);
+            }
+        }
     }
 });
 
