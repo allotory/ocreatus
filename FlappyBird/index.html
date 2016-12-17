@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flappy Bird</title>
+
+    <script type="text/javascript" src="js/phaser.min.js"></script>
+
+    <script>
+        var game = new Phaser.Game(288, 512, Phaser.AUTO, "game");
+
+        // 创建一个对象用来存放 states
+        game.States = {};
+
+        game.States.boot = function() {
+            this.preload = function() {
+                game.load.image("bg_day", "assets/bg_day.png");
+                game.load.image("loading", "assets/loader.gif");
+            };
+            this.create = function() {
+                game.state.start("preload");
+            };
+        };
+
+        game.States.preload = function() {
+            this.preload = function() {
+                // 创建显示loading进度的sprite
+                game.add.tileSprite(0, 0, game.width, game.height,"bg_day").autoScroll(-10,0);
+                var preloadSprite = game.add.sprite(80, game.height/2,"loading");
+                // 用setPreloadSprite方法来实现动态进度条的效果
+                game.load.setPreloadSprite(preloadSprite);
+
+                // game.load.image("bg_day", "assets/bg_day.png");
+                game.load.image("bg_night", "assets/bg_night.png");
+            };
+            this.create = function() {
+                game.state.start("menu");
+            }
+
+        };
+        game.States.menu = function() {};
+//        game.States.play = function() {};
+
+        game.state.add("boot", game.States.boot);
+        game.state.add("preload", game.States.preload);
+        game.state.add("menu", game.States.menu);
+//        game.state.add("play", game.States.play);
+
+
+        game.state.start("boot");
+    </script>
+</head>
+<body>
+    <div id="game"></div>
+</body>
+</html>
