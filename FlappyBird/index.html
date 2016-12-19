@@ -14,8 +14,16 @@
 
         game.States.boot = function() {
             this.preload = function() {
+                // 背景
                 game.load.image("bg_day", "assets/bg_day.png");
+                // 加载滚动条
                 game.load.image("loading", "assets/loader.gif");
+                // 游戏标题
+                game.load.image("title","assets/title.png");
+                // 小鸟
+                // parameter: key, url, frameWidth, frameHeight, frameMax, margin, spacing
+                // 名称，图片地址，帧宽度，帧高度，最大帧数，每帧外边距（0），每帧间隔（0）
+                game.load.spritesheet("bird_sheet", "assets/bird_sheet.png", 34, 24, 3);
             };
             this.create = function() {
                 game.state.start("preload");
@@ -24,33 +32,88 @@
 
         game.States.preload = function() {
             this.preload = function() {
+                // 加载页面背景 autoScroll 表示移动速度为10，负数表示向左
+                // parameter: x, y, width, height, image_key
+                game.add.tileSprite(0, 0, game.width, game.height, "bg_day").autoScroll(-10, 0);
+
+                // 创建组
+                var titleGroup = game.add.group();
+                titleGroup.create(0, 0, "title");
+                //创建bird对象并添加到组里
+                var bird = titleGroup.create(190, 10, "bird_sheet");
+                //给鸟添加动画
+                bird.animations.add("fly");
+                //播放动画
+                bird.animations.play("fly", 12, true);
+                //调整组的水平、垂直位置
+                titleGroup.x = 35;
+                titleGroup.y = 100;
+
                 // 创建显示loading进度的sprite
-                game.add.tileSprite(0, 0, game.width, game.height,"bg_day").autoScroll(-10,0);
-                var preloadSprite = game.add.sprite(80, game.height/2,"loading");
+                var preloadSprite = game.add.sprite(80, game.height/2, "loading");
                 // 用setPreloadSprite方法来实现动态进度条的效果
                 game.load.setPreloadSprite(preloadSprite);
 
-                // game.load.image("bg_day", "assets/bg_day.png");
-                game.load.image("bg_night", "assets/bg_night.png");
+                // 加载开始按钮（显示进度条后面没有语句时，进度条会不显示，只有一条竖线……^$(*#^@& why?）
+                game.load.image("start_btn", "assets/start_btn.png");
+                // 地面
+                game.load.image("ground", "assets/ground.png");
             };
             this.create = function() {
                 game.state.start("menu");
             }
 
         };
-        game.States.menu = function() {};
-//        game.States.play = function() {};
+
+        game.States.menu = function() {
+            this.create = function() {
+                // 背景和地面动画， autoScroll 为速度
+                // parameter: x, y, width, height, image_key
+                var background = game.add.tileSprite(0, 0, game.width, game.height, "bg_day");
+                background.autoScroll(-10, 0);
+                var ground = game.add.tileSprite(0, game.height - 112, game.width, 112, "ground");
+                ground.autoScroll(-100, 0);
+
+                var titleGroup = game.add.group();
+                titleGroup.create(0, 0, "title");
+                var bird = titleGroup.create(190, 10, "bird_sheet");
+                bird.animations.add("fly");
+                bird.animations.play("fly", 12, true);
+                titleGroup.x = 35;
+                titleGroup.y = 100;
+
+                // 对这个组添加一个tween动画，让它不停的上下移动
+                // to(properties, duration, ease, autoStart, delay, repeat, yoyo)
+                // properties :  js对象，里面包含着需要进行动画的属性，如上面代码中的 {y:120}
+                // duration : 补间动画持续的时间，单位为毫秒
+                // ease : 缓动函数，默认为匀速动画
+                // autoStart : 是否自动开始
+                // delay : 动画开始前的延迟时间，单位为毫秒
+                // repeat : 动画重复的次数，如果需要动画永远循环，则把该值设为 Number.MAX_VALUE
+                // yoyo : 如果该值为true,则动画会自动反转
+                game.add.tween(titleGroup).to({ y:120 }, 1000, null, true, 0, Number.MAX_VALUE, true);
+
+                // 添加一个按钮
+                var btn = game.add.button(game.width / 2, game.height / 2, "start_btn", function(){
+                    //点击按钮时跳转到play场景
+                    game.state.start("play");
+                });
+                //设置按钮的中心点
+                btn.anchor.setTo(0.5, 0.5);
+            }
+        };
+        game.States.play = function() {};
 
         game.state.add("boot", game.States.boot);
         game.state.add("preload", game.States.preload);
         game.state.add("menu", game.States.menu);
-//        game.state.add("play", game.States.play);
+        game.state.add("play", game.States.play);
 
 
         game.state.start("boot");
     </script>
 </head>
 <body>
-    <div id="game"></div>
+    <div id="game" style="text-align: center"></div>
 </body>
 </html>
