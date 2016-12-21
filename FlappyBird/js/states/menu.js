@@ -35,10 +35,10 @@ Menu.prototype = {
 
         // 添加一个按钮
         var btn = this.game.add.button(this.game.width / 2, this.game.height / 2, "start_btn", function(){
-            //点击按钮时跳转到play场景
-            this.game.state.start("play");
+            //点击按钮时跳转到 gaming 场景
+            this.game.state.start("gaming");
         });
         //设置按钮的中心点
         btn.anchor.setTo(0.5, 0.5);
     }
-}
+};

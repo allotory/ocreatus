@@ -3,7 +3,7 @@
  */
 
 // 加载预加载资源，并构建游戏的配置
-function Boot() {};
+function Boot() {}
 
 Boot.prototype = {
 
@@ -22,4 +22,4 @@ Boot.prototype = {
     create: function() {
         this.game.state.start("preload");
     }
-}
+};

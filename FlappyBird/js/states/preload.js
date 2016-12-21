@@ -34,8 +34,29 @@ Preload.prototype = {
         this.game.load.image("start_btn", "assets/start_btn.png");
         // 地面
         this.game.load.image("ground", "assets/ground.png");
+        // get ready
+        this.game.load.image("ready", "assets/get_ready.png");
+        // tap
+        this.game.load.image("tap", "assets/tap.png");
+
+        //飞翔的音效
+        this.game.load.audio("fly_sound", "assets/sounds/flap.wav");
+        // 得分的音效
+        this.game.load.audio("score_sound", "assets/sounds/score.wav");
+        // 撞击管道的音效
+        this.game.load.audio("hit_pipe_sound", "assets/sounds/pipe_hit.wav");
+        // 撞击地面的音效
+        this.game.load.audio("hit_ground_sound", "assets/sounds/ouch.wav");
+        // 撞击天花板音效
+        this.game.load.audio("hit_ceiling_sound", "assets/sounds/ouch.wav")
+
+        // 管道
+        this.game.load.image("pipe_up", "assets/pipe_up.png");
+        this.game.load.image("pipe_down", "assets/pipe_down.png");
+        // 管道
+        this.game.load.spritesheet("pipe","assets/pipes.png", 54, 320, 2);
     },
     create: function() {
         this.game.state.start("menu");
     }
-}
+};
