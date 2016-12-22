@@ -32,8 +32,11 @@ Preload.prototype = {
 
         // 加载开始按钮（显示进度条后面没有语句时，进度条会不显示，只有一条竖线……^$(*#^@& why?）
         this.game.load.image("start_btn", "assets/start_btn.png");
+        // 夜晚背景
+        this.game.load.image("bg_night", "assets/bg_night.png");
         // 地面
-        this.game.load.image("ground", "assets/ground.png");
+        this.game.load.image("ground", "assets/ground_day.png");
+        this.game.load.image("ground_night", "assets/ground_night.png");
         // get ready
         this.game.load.image("ready", "assets/get_ready.png");
         // tap
@@ -53,8 +56,20 @@ Preload.prototype = {
         // 管道
         this.game.load.image("pipe_up", "assets/pipe_up.png");
         this.game.load.image("pipe_down", "assets/pipe_down.png");
-        // 管道
-        this.game.load.spritesheet("pipe","assets/pipes.png", 54, 320, 2);
+
+        // 结束界面
+        this.game.load.image("game_over", "assets/gameover.png");
+        this.game.load.image("medals", "assets/medals.png");
+        this.game.load.image("scoreboard", "assets/scoreboard.png");
+
+        // 字体
+        this.game.load.bitmapFont("flappy_font", "assets/fonts/flappyfont.png", "assets/fonts/flappyfont.fnt");
+
+        // 奖牌
+        this.game.load.image("medals0", "assets/medals_0.png");
+        this.game.load.image("medals1", "assets/medals_1.png");
+        this.game.load.image("medals2", "assets/medals_2.png");
+        this.game.load.image("medals3", "assets/medals_3.png");
     },
     create: function() {
         this.game.state.start("menu");

@@ -7,6 +7,7 @@ function Menu() {}
 
 Menu.prototype = {
     create: function() {
+
         // 背景和地面动画， autoScroll 为速度
         // parameter: x, y, width, height, image_key
         var background = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, "bg_day");

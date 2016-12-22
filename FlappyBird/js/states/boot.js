@@ -8,6 +8,13 @@ function Boot() {}
 Boot.prototype = {
 
     preload: function() {
+        // 移动设备适应
+        if(!this.game.device.desktop){
+            this.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+            this.scale.forcePortrait = true;
+            this.scale.refresh();
+        }
+
         // 背景
         this.game.load.image("bg_day", "assets/bg_day.png");
         // 加载滚动条

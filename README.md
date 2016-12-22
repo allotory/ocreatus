@@ -8,6 +8,10 @@ This is a javascript application repo named "Ocreatus".
 
     ![screenshot](./screenshot/2048.PNG)
 
+2. FlappyBird
+
+    ![flappybird](./screenshot/flappybird.png)
+
 # License
 
 The MIT License.

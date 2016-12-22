@@ -7,13 +7,27 @@ function Gaming() {}
 
 Gaming.prototype = {
     create: function() {
+
+        // 随机背景
+        var bg_flag, ground_flag;
+        if (Math.random() < 0.5) {
+            bg_flag = "bg_day";
+            ground_flag = "ground";
+        } else {
+            bg_flag = "bg_night"
+            ground_flag = "ground_night";
+        }
+
         // 背景
-        this.background = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, "bg_day");
-        // 地面
-        this.ground = this.game.add.tileSprite(0, this.game.height - 112, this.game.width, 112, "ground");
-        // 用于存放管道的组
+        this.background = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, bg_flag);
+
+        // 用于存放管道的组，管道要先于地面创建，否则管道会在地面的上面
         this.pipeGroup = this.game.add.group();
         this.pipeGroup.enableBody = true;
+
+        // 地面
+        this.ground = this.game.add.tileSprite(0, this.game.height - 112, this.game.width, 112, ground_flag);
+
         // 小鸟
         this.bird = this.game.add.sprite(50, 150, "bird_sheet");
         this.bird.animations.add("fly");
@@ -25,6 +39,10 @@ Gaming.prototype = {
         this.soundScore = this.game.add.sound("score_sound");
         this.soundHitPipe = this.game.add.sound("hit_pipe_sound");
         this.soundHitGround = this.game.add.sound("hit_ground_sound");
+
+        // 每过一个管道显示的分数
+        // bitmapText(x, y, font, text, size, group)
+        this.scoreText = this.game.add.bitmapText(this.game.width - 40, this.game.height - 50, "flappy_font", "0", 24);
 
         // 开启小鸟对象的物理系统
         // enable(object, system, debug)
@@ -96,33 +114,30 @@ Gaming.prototype = {
     },
     generatePipes: function(gap) {
 
-        gap = gap || 100; //上下管道之间的间隙宽度
-        var position = (505 - 320 - gap) + Math.floor((505 - 112 - 30 - gap - 505 + 320 + gap) * Math.random());
-        var downPipeY = position-360;
-        var upPipeY = position+gap;
+        // gap = gap || 100; //上下管道之间的间隙宽度
+        // var position = (505 - 320 - gap) + Math.floor((505 - 112 - 30 - gap - 505 + 320 + gap) * Math.random());
+        // var downPipeY = position-360;
+        // var upPipeY = position+gap;
 
-        // // 缺口大小，100 + 0 ~ 100
-        // // this.gap = parseInt(Math.floor(100 + Math.random() * 101));
+        // // 缺口大小，100 + 0 ~ 50
+        gap = parseInt(Math.floor(100 + Math.random() * 50));
         // gap = 100;
-        // // 游戏高度去掉地面，上下管道最小值设为 40，
-        // // 当下管道最小时，上部管道最大值为（高度 - gap - 40） = 260
-        // // 档上管道最小时（position = 40），下管道也为最大值，所以 position 范围（40 ~ 260）
-        // var position = parseInt(Math.floor(Math.random() * 220 + 40));
-        // var downPipeY = position - 320;
-        // var upPipeY = position + gap;
+        // 游戏高度去掉地面，上下管道最小值设为 80，
+        // 当下管道最小时，上部管道最大值为（高度 - gap - 80） = 220
+        // 档上管道最小时（position = 80），下管道也为最大值，所以 position 范围（80 ~ 220）
+        var position = parseInt(Math.floor(Math.random() * 160 + 80));
+        var downPipeY = position - 320;
+        var upPipeY = position + gap;
 
         // 检查当前是否有管道已经出了边界，如果有，则重置出了边界的那组管道的位置，如果没有，则生成一组新的管道
         if (this.resetPipe(downPipeY, upPipeY)) {
             return;
         }
 
-        var topPipe = this.game.add.sprite(this.game.width, downPipeY, "pipe", 0, this.pipeGroup);
-        var bottomPipe = this.game.add.sprite(this.game.width, upPipeY, "pipe", 1, this.pipeGroup);
-
-        // //上方的管道
-        // this.game.add.sprite(this.game.width, downPipeY, "pipe_down", 0, this.pipeGroup);
-        // //下方的管道
-        // this.game.add.sprite(this.game.width, upPipeY, "pipe_up", 0, this.pipeGroup);
+        //上方的管道
+        this.game.add.sprite(this.game.width, downPipeY, "pipe_down", 0, this.pipeGroup);
+        //下方的管道
+        this.game.add.sprite(this.game.width, upPipeY, "pipe_up", 0, this.pipeGroup);
 
         // setAll 快速设置该组所有 child 的相同属性到一个新值
         // 边界检测
@@ -207,14 +222,54 @@ Gaming.prototype = {
         this.game.input.onDown.remove(this.fly, this);
         this.game.time.events.stop(true);
     },
-    showGameOverText: function(info) {
-        alert(info);
+    showGameOverText: function() {
+        // 去掉实时显示的分数
+        this.scoreText.destroy();
+        // 最好成绩
+        this.game.bestScore = this.game.bestScore || 0;
+        if(this.score > this.game.bestScore) {
+            this.game.bestScore = this.score;
+        }
+
+        // 添加一个游戏结束组
+        this.gameOverGroup = this.game.add.group();
+        // game over 文字图片
+        var gameOverText = this.gameOverGroup.create(this.game.width / 2, 0, "game_over");
+        // 分数板
+        var scoreboard = this.gameOverGroup.create(this.game.width / 2, 70, "scoreboard");
+        // 奖牌
+        var medalsFlag;
+        if (this.score <= 10) {
+            medalsFlag = "medals0";
+        } else if (10 < this.score <= 20) {
+            medalsFlag = "medals1";
+        } else if (20 < this.score <= 30) {
+            medalsFlag = "medals2";
+        } else {
+            medalsFlag = "medals3";
+        }
+        var medals = this.gameOverGroup.create(this.game.width / 4 + 6, 114, medalsFlag);
+        // 当前分数
+        this.game.add.bitmapText(this.game.width / 2 + 60, 105, "flappy_font", this.score + "", 20, this.gameOverGroup);
+        // 最好分数
+        this.game.add.bitmapText(this.game.width / 2 + 60, 153, "flappy_font", this.game.bestScore + "", 20, this.gameOverGroup);
+
+        //重玩按钮
+        var replayBtn = this.game.add.button(this.game.width / 2, 210, "start_btn", function(){
+            this.game.state.start("gaming");
+        }, this, null, null, null, null, this.gameOverGroup);
+
+        gameOverText.anchor.setTo(0.5, 0);
+        scoreboard.anchor.setTo(0.5, 0);
+        medals.anchor.setTo(0.5, 0);
+        replayBtn.anchor.setTo(0.5, 0);
+        this.gameOverGroup.y = 30;
     },
     checkScore: function(pipe) {
         // 负责分数的检测和更新
-        if(!pipe.hasScored && pipe.y<=0 && pipe.x<=this.bird.x-17-54){
+        if(!pipe.hasScored && pipe.y <= 0 && pipe.x <= this.bird.x - 17 - 54){
             pipe.hasScored = true;
-            // this.scoreText.text = ++this.score;
+            this.scoreText.text = ++ this.score;
             this.soundScore.play();
             return true;
         }
