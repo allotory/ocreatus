@@ -12,6 +12,10 @@ This is a javascript application repo named "Ocreatus".
 
     ![flappybird](./screenshot/flappybird.png)
 
+3. MonsterWantsCandy
+
+    ![monster](./screenshot/monster.png)
+
 # License
 
 The MIT License.

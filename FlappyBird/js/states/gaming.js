@@ -101,6 +101,10 @@ Gaming.prototype = {
 
         // 给鼠标按下事件绑定鸟的飞翔动作
         this.game.input.onDown.add(this.fly, this);
+        // 键盘空格键
+        this.cursors = this.game.input.keyboard.createCursorKeys();
+        this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        this.fireButton.onDown.add(this.fly, this);
         // 启动时钟事件，开始制造管道
         this.game.time.events.start();
     },
