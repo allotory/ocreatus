@@ -14,7 +14,7 @@ This is a javascript application repo named "Ocreatus".
 
 3. MonsterWantsCandy
 
-    ![monster](./screenshot/monster.png)
+    ![monster](./screenshot/monster.PNG)
 
 # License
 
