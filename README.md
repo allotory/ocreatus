@@ -18,7 +18,7 @@ This is a javascript application repo named "Ocreatus".
 
 # License
 
-The MIT License.
+The GPL3.0 License.
 
 # Contact
 
